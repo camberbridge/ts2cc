@@ -108,11 +108,17 @@ class StatementBody(object):
     #on every packet paylod processing. This may be incorrect
     decoder = Decoder()
     line = ''
+    characters = ""
     while bytes_read<bytes_to_read[0]:
       statement = decoder.decode(f)
       if statement:
-          bytes_read += len(statement)
-          statements.append(statement)
+        try:
+          characters += statement._character
+        except:
+          pass
+        bytes_read += len(statement)
+        statements.append(statement)
+    if len(characters) > 0: print(characters) # TODO: Write captions to file
       #if isinstance(statement, code_set.Kanji) or isinstance(statement, code_set.Alphanumeric) \
       #  or isinstance(statement, code_set.Hiragana) or isinstance(statement, code_set.Katakana):
       #  if DEBUG:

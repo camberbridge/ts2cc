@@ -12,6 +12,8 @@ from closed_caption import StatementBody
 from ass import ASSFormatter
 import traceback
 
+FULL_TS_FLAG = False
+
 class FileOpenError(Exception):
   def __init__(self, msg='No further info'):
     self._msg = msg
@@ -159,7 +161,7 @@ def get_program_map_PIDs(ts):
     if program_number != 0:
       yield program_map_PID
 
-def get_caption_pid(packets, full_ts_flag):
+def get_caption_pid(packets):
   """Return a caption packet PID from the PMT.
   """
   for packet in packets:
@@ -170,7 +172,7 @@ def get_caption_pid(packets, full_ts_flag):
     map_index = 12 + program_info_length
     crc_index = section_length - 4
 
-    if full_ts_flag:
+    if FULL_TS_FLAG:
       while map_index < crc_index:
         stream_type = packet[map_index]
         elementary_PID = ((packet[map_index+1] & 0x1F) << 8) | packet[map_index+2]
@@ -343,8 +345,9 @@ class TransportStreamFile(BufferedReader):
     if pid in self._elementary_streams and pes_packet_complete(self._elementary_streams[pid]):
       es = self._elementary_streams[pid]
       header_size = get_pes_header_length(es)
-      #self.OnESPacket(pid, es, header_size) # TODO
-      OnESPacket(pid, es, header_size)
+      if not FULL_TS_FLAG:
+        #self.OnESPacket(pid, es, header_size) # TODO
+        OnESPacket(pid, es, header_size)
 
     return packet
 
@@ -484,9 +487,8 @@ if __name__ == '__main__':
 
     # Parse packets regardless of Full TS or limited TS.
     if len(pmt_pids) > 2:
-      caption_pid = [get_caption_pid(get_packet(ts, pmt_pids), True)]
-    else:
-      caption_pid = [get_caption_pid(get_packet(ts, pmt_pids), False)]
+      FULL_TS_FLAG = True
+    caption_pid = [get_caption_pid(get_packet(ts, pmt_pids))]
     print("Caption_PID: ", caption_pid)
 
     if caption_pid[0] is not None:

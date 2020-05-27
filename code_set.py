@@ -161,10 +161,10 @@ class Kanji(object):
       #h = s.decode('hex')  # Py2
       h = bytes.fromhex(s)  # Py3
       try:
-          print(h.decode('euc-jisx0213'))
+          #print(h.decode('euc-jisx0213'))
           self._character = h.decode('euc-jisx0213')
       except:
-          print('◻')
+          #print('◻')
           self._character = '◻'
     if DEBUG:
       print('[{b}][{b2}]-->{char}'.format(b=hex(b), b2=hex(b2), char=self._character).encode('utf-8'))
