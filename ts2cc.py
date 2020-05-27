@@ -492,8 +492,11 @@ if __name__ == '__main__':
     print("Caption_PID: ", caption_pid)
 
     if caption_pid[0] is not None:
-      for pes in get_packet(ts, caption_pid):
-        for caption in parse_caption(pes, options):
-          out.write(str(CProfileString(caption, options)))
-          out.flush()
+      with open(outfilename, "w") as f:
+        for pes in get_packet(ts, caption_pid):
+          for caption in parse_caption(pes, options):
+            textline = str(CProfileString(caption, options))
+            f.write(textline)
+            out.write(textline)
+            out.flush()
     print("\nFiniesh!!!")
