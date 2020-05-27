@@ -441,11 +441,13 @@ def OnESPacket(current_pid, packet, header_size):
         if not isinstance(data_unit.payload(), StatementBody):
           continue
 
+        """
         if not ass:
           v = not SILENT
           ass = ASSFormatter(tmax=tmax, video_filename=outfilename, verbose=v)
 
-        #ass.format(data_unit.payload().payload(), elapsed_time_s)
+        ass.format(data_unit.payload().payload(), elapsed_time_s)
+        """
 
     else:
       management_data = data_group.payload()

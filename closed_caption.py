@@ -118,7 +118,11 @@ class StatementBody(object):
           pass
         bytes_read += len(statement)
         statements.append(statement)
-    if len(characters) > 0: print(characters) # TODO: Write captions to file
+    if len(characters) > 0: # TODO: Write captions to file
+      print(characters)
+      import sys
+      with open (sys.argv[1]+".ass", "a") as f:
+        f.write(characters)
       #if isinstance(statement, code_set.Kanji) or isinstance(statement, code_set.Alphanumeric) \
       #  or isinstance(statement, code_set.Hiragana) or isinstance(statement, code_set.Katakana):
       #  if DEBUG:
