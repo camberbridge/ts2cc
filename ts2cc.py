@@ -21,30 +21,18 @@ class DRCSString(object):
   images = {
     '8473bbfc8870eb44e2124f36ded70f34': '凜',
     '20c5bf5ad460814c4627fa9abe1b5389': '蜻',
-    # 細い開き二重括弧
     'f47249bc346fe4194b933b09571cab7d': '((',
-    # 太い開き二重括弧
     '618a99e2a0640543bb18ea8269f78f4b': '((',
-    # 細い閉じ二重括弧
     'c6ebb54b066867774f42a247df7a6c1b': '))',
-    # 太い閉じ二重括弧
     '094fd4e8b58d5c1f016f6cc695c9c8dd': '))',
-    # スマイルプリキュアで使われる曲名表示括弧
     '7bb547a3336fb28775ed4b31ccea2c61': '「',
     '78bea8412561249617d2cf8c624a00a6': '」',
-    # 疑問符感嘆符 QUESTION EXCLAMATION MARK (U+2048)
     '60bd03df9faa250e0f797d719df1320c': '⁈',
-    # 携帯電話 (TBS) MOBILE PHONE (U+1F4F1)
     '9c0ac7f2b2f81acb81b9000e7d8ff56a': '📱',
-    # 携帯電話 (CX) MOBILE PHONE (U+1F4F1)
     'd27350b838145fe4433102121e2ba56b': '📱',
-    # トランシーバー MOBILE PHONE (U+1F4F1)
     '881edb7f0adc96d25b056f016d2ddd86': '📱',
-    # スピーカー1 PUBLIC ADDRESS LOUDSPEAKER (U+1F4E2)
     'b0f1dabe3e27571f654b4196aa7f27e7': '📢',
-    # スピーカー2 PUBLIC ADDRESS LOUDSPEAKER (U+1F4E2)
     '24c1bf547f713a666ed983852a8f2fbb': '📢',
-    # コンピューター PERSONAL COMPUTER (U+1F4BB)
     '19ec594cff4ebf2f56e5fd1799f89142': '💻',
   }
 
@@ -105,7 +93,8 @@ class CProfileString(object):
     return next(self.character())
 
   def character(self):
-    """一文字ずつUnicode型として返すジェネレータ"""
+    """Genarator returns each charcter as an Unicode type.
+    """
     while self.data:
       char1 = self.data.pop(0)
       if 0xa0 < char1 < 0xff:
@@ -115,7 +104,7 @@ class CProfileString(object):
         except UnicodeDecodeError:
           gaiji = ((char1 & 0x7f) << 8) | (char2 & 0x7f)
           if gaiji == 0x7c21:
-            # 次の字幕パケットへセリフが続いていることを示す矢印
+            # An arrow indicating that subtitles continues to the next packet.
             continue
           try:
             yield GAIJI_MAP[gaiji]
@@ -130,9 +119,9 @@ class CProfileString(object):
     return ''.join(self)
 
 def get_packet(ts, target_pids):
-  """指定のPIDのTSテーブルを返すジェネレータ
-  ts  -- 取得対象のTSファイル
-  target_pids  -- 取得対象のPIDのリスト
+  """Generator returns a TS dict for the targeted PID.
+  ts: TS file to get(target).
+  target_pids: PID list to get(target).
   """
   buf = defaultdict(bytearray)
   for packet in ts:
@@ -156,7 +145,8 @@ def get_packet(ts, target_pids):
         buf[pid].extend(packet[payload_index:])
 
 def get_program_map_PIDs(ts):
-  """PATからPMTのIDを返すジェネレータ"""
+  """Generator returns PMT ID from the PAT.
+  """
   packet = next(get_packet(ts, [0x00]))
   table_id = packet[0]
   section_length = ((packet[1] & 0x0F) << 8) | packet[2]
@@ -170,7 +160,8 @@ def get_program_map_PIDs(ts):
       yield program_map_PID
 
 def get_caption_pid(packets, full_ts_flag):
-  """PMTから字幕パケットのPIDを返す"""
+  """Return a caption packet PID from the PMT.
+  """
   for packet in packets:
     table_id = packet[0]
     section_length = ((packet[1] & 0x0F) << 8) | packet[2]
@@ -192,7 +183,8 @@ def get_caption_pid(packets, full_ts_flag):
           return elementary_PID
 
 def parse_caption(packet, options):
-  """字幕パケットから字幕本文を返すジェネレータ"""
+  """Generator returns caption texts from the caption packt.
+  """
   PES_header_data_length = packet[8]
   PTS = (((packet[9] & 0x0E) << 29) |
          (packet[10] << 22) | ((packet[11] & 0xFE) << 14) |
@@ -243,7 +235,6 @@ def a(packet):
   """
 
 def parse_descriptor(packet):
-  """記述子を必要最低限にパースし、タグID-記述子リストの辞書として返す"""
   total_length = len(packet)
   index = 0
   result = defaultdict(list)
@@ -256,8 +247,6 @@ def parse_descriptor(packet):
   return result
 
 class TS(object):
-  """ very minimalistic Transport stream handling
-  """
   PACKET_SIZE = 188
   
   # Sync byte
@@ -309,13 +298,11 @@ class ES:
   STREAM_ID_INDEX = 3
 
 class TransportStreamFile(BufferedReader):
-  """TSファイル"""
   def __init__(self, path):
     BufferedReader.__init__(self, FileIO(path))
     self._elementary_streams = {}
 
   def __next__(self):
-    """次のTSパケットを返す"""
     packet = bytearray(self.read(188))
 
     if len(packet) != TS.PACKET_SIZE:

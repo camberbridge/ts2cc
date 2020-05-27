@@ -22,11 +22,10 @@ class DataGroupParseError(Exception):
 def split_buffer(length, buf):
   '''split provided array at index x
   '''
-  #print "split-buffer******"
   a = []
   if len(buf)<length:
     return (a, buf)
-  #print "length of buf is" + str(len(buf))
+
   for i in range(length):
     a.append(buf.pop(0))
   return (a,buf)
@@ -38,13 +37,13 @@ def ucb(f):
     if len(f) < 1:
       raise EOFError()
     b, f = split_buffer(1, f)
-    #return struct.unpack('B', ''.join(b))[0]
+
     return b[0]
   else:
     _f = f.read(1)
     if len(_f) < 1:
       raise EOFError()
-    #return struct.unpack('B', _f)[0]
+
     return _f[0]
 
 def usb(f):
@@ -52,7 +51,7 @@ def usb(f):
   '''
   if isinstance(f, list):
     n, f = split_buffer(2, f)
-    #return struct.unpack('>H', ''.join(n))[0]
+
     return n[0]
   else:
     _f = f.read(2)
@@ -60,7 +59,7 @@ def usb(f):
       print("usb: " + hex(_f[0]) + ":" + hex(_f[1]))
     if len(_f) < 2:
       raise EOFError()
-    #return struct.unpack('>H', _f)[0]
+
     return _f[0]
 
 class DataGroup(object):
@@ -118,8 +117,6 @@ class DataGroup(object):
     if not self.is_management_data():
       self._payload = CaptionStatementData(f)
     else:
-      #self._payload = f.read(self._data_group_size)
-      #self._payload = read.buffer(f, self._data_group_size)
       self._payload = CaptionManagementData(f)
     
     self._crc = usb(f)
@@ -139,54 +136,3 @@ class DataGroup(object):
     to qualify as management data.
     '''
     return ((self._group_id >> 2)&(~0x20))==0
-
-def find_data_group_start(f):
-  """
-  Find the start of the next data group in a binary file
-  :param f: file descriptor we're reading from typically opened 'rb'
-  :return: Boolean describing whether we found a new start pattern or not
-  """
-  start_pattern = '\x80\xff\xf0'
-  read_pattern = ''
-  c = f.read(1)
-  while c:
-    filepos = f.tell()
-    read_pattern += c
-    if len(read_pattern) > 3:
-      read_pattern = read_pattern[1:]
-    if read_pattern == start_pattern:
-      f.seek(filepos-3)
-      return True
-    c = f.read(1)
-  return False
-
-def next_data_group(filepath):
-  f = open(filepath, "rb")
-  try:
-    data_group = DataGroup(f)
-    while data_group:
-      yield data_group
-      try:
-        data_group = DataGroup(f)
-      except EOFError:
-          break
-      except Exception:
-        print("Exception throw while parsing data group from .es")
-        traceback.print_exc(file=sys.stdout)
-        print("Looking for new data group in .es")
-        found = find_data_group_start(f)
-        if found:
-          print("Data group found. Continuing.")
-          continue
-        print("Data group not found. Bailing.")
-        break
-  except EOFError:
-    # we can quite rightly run into eof here. in that case just bail
-    pass
-  except Exception:
-    print("Exception throw while parsing data group from .es")
-    traceback.print_exc(file=sys.stdout)
-  finally:
-    f.close()
-
-

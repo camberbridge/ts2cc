@@ -10,17 +10,16 @@ class EOFError(Exception):
 def split_buffer(length, buf):
   '''split provided array at index x
   '''
-  #print "split-buffer******"
   a = []
   if len(buf)<length:
     return (a, buf)
-  #print "length of buf is" + str(len(buf))
+
   for i in range(length):
     a.append(buf.pop(0))
   return (a,buf)
 
 def dump_list(list):
-  print(u' '.join(u'{:#x}'.format(x) for x in list))
+  print(' '.join('{:#x}'.format(x) for x in list))
 
 def ucb(f):
   '''Read unsigned char byte from binary file
@@ -29,13 +28,13 @@ def ucb(f):
     if len(f) < 1:
       raise EOFError()
     b, f = split_buffer(1, f)
-    #return struct.unpack('B', ''.join(b))[0]
+
     return b[0]
   else:
     _f = f.read(1)
     if len(_f) < 1:
       raise EOFError()
-    #return struct.unpack('B', _f)[0]
+
     return _f[0]
 
 def usb(f):
@@ -57,18 +56,16 @@ def ui3b(f):
   '''
   if isinstance(f, list):
     n, f = split_buffer(3, f)
-    #return struct.unpack('>I', '\x00'+ ''.join(n))[0]
+
     return n[-1:]
   else:
     _f = f.read(3)
     if len(_f) < 3:
       raise EOFError()
-    #return struct.unpack('>I', '\x00'+ (_f))[0]
+
     return _f[-1:]
 
 def uib(f):
-  '''
-  '''
   if isinstance(f, list):
     n, f = split_buffer(4, f)
     return struct.unpack('>L', ''.join(n))[0]

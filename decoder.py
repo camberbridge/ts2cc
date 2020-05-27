@@ -1,13 +1,3 @@
-# vim: set ts=2 expandtab:
-'''
-Module: decoder.py
-Desc: stateful arib teletext decoder
-Author: John O'Neil
-Email: oneil.john@gmail.com
-DATE: Friday, March 15th 2014
-
-'''
-
 import read
 from control_characters import is_control_character
 from control_characters import handle_control_character
@@ -36,7 +26,7 @@ def is_gl_character(char):
   ARIB STD-B24 figure 7-1
   '''
   ub = char >> 4
-  #print 'is_gl_char char:{char} ub: {ub}'.format(char=char, ub=ub)
+  #print('is_gl_char char:{char} ub: {ub}'.format(char=char, ub=ub))
   return char != 0x20 and char != 0xa0 and ub > 0x01 and ub < 0x08
 
 def is_gr_character(char):
@@ -96,7 +86,7 @@ class Decoder(object):
     '''Given first character c, read from f and change current
     encoding appropriately
     '''
-    #print 'handle_encoding_change'
+    #print('handle_encoding_change')
     #If we have a saved control set hanging around, this means the current
     #was set by SINGLE (NON LOCKING) SHIFT, so revert back to the saved
     if self._single_shift:
@@ -147,7 +137,3 @@ class Decoder(object):
       return
 
     raise DecodingError() 
-    
-  
-    
-

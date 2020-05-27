@@ -122,8 +122,8 @@ class ASSFile(object):
   def write_header(self, width, height, title):
     header = '''[Script Info]
 ; *****************************************************************************
-; File generated via arib-ts2ass
-; https://github.com/johnoneil/arib
+; File generated via 
+; https://github.com/camberbridge/ts2cc
 ; *****************************************************************************
 Title: Japanese Closed Caption Subtitlies
 ScriptType: v4.00+
@@ -165,22 +165,22 @@ def asstime(seconds):
 def kanji(formatter, k, timestamp):
   formatter.open_file()
   formatter._current_lines[-1] += k
-  #print k
+  #print(k)
 
 def alphanumeric(formatter, a, timestamp):
   formatter.open_file()
   formatter._current_lines[-1] += a
-  #print a
+  #print(a)
 
 def hiragana(formatter, h, timestamp):
   formatter.open_file()
   formatter._current_lines[-1] += h
-  #print h
+  #print(h)
 
 def katakana(formatter, k, timestamp):
   formatter.open_file()
   formatter._current_lines[-1] += k
-  #print k
+  #print(k)
 
 def medium(formatter, k, timestamp):
   formatter.open_file()
@@ -293,7 +293,7 @@ def clear_screen(formatter, cs, timestamp):
      
       line = 'Dialogue: 0,{start_time},{end_time},normal,,0000,0000,0000,,{line}\\N\n'.format(start_time=start_time, end_time=end_time, line=l._s)
       #TODO: add option to dump to stdout
-      #print line.encode('utf-8')
+      #print(line.encode('utf-8'))
       if formatter._ass_file:
         formatter._ass_file.write(line)
       formatter._current_lines = [Dialog('')]
@@ -304,13 +304,6 @@ def clear_screen(formatter, cs, timestamp):
   
 
 class ASSFormatter(object):
-  """
-  Format ARIB objects to dialog of the sort below:
-  Dialogue: 0,0:02:24.54,0:02:30.55,small,,0000,0000,0000,,{\pos(500,900)}ゴッド\n
-  Dialogue: 0,0:02:24.54,0:02:30.55,small,,0000,0000,0000,,{\pos(780,900)}ほかく\n
-  Dialogue: 0,0:02:24.54,0:02:30.55,normal,,0000,0000,0000,,{\pos(420,1020)}ＧＯＤの捕獲を目指す・\n
-  """
-
   DISPLAYED_CC_STATEMENTS = {
     code_set.Kanji : kanji,
     code_set.Alphanumeric : alphanumeric,
@@ -401,5 +394,5 @@ class ASSFormatter(object):
       else:
         #TODO: Warning of unhandled characters
         pass
-        #print str(type(c))
+        #print(str(type(c)))
 
