@@ -339,7 +339,11 @@ class TransportStreamFile(BufferedReader):
       if pid in self._elementary_streams:
         if not self._elementary_streams[pid]:
           self._elementary_streams[pid] = ""
-        self._elementary_streams[pid] += payload
+        try:
+          self._elementary_streams[pid] += payload
+        except:
+          # TypeError: can only concatenate str (not "bytearray") to str
+          pass
       else:
         pass
     if pid in self._elementary_streams and pes_packet_complete(self._elementary_streams[pid]):
