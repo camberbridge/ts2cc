@@ -1,9 +1,9 @@
-Under construction(準備中...)
+    **Under construction(準備中...)**
 
-# ts2cc in Python
-Parses TS packets and extracts closed captions from TS recorded via "recdvb", "dvbv5" and "Mirakurun".  
+# ts2cc: MPEG-2 TS to Closed caption texts in Python.
+Parses TS packets and extracts closed captions from MPEG-2 TS recorded via [recdvb](http://www13.plala.or.jp/sat/recdvb/), [dvbv5-zap](https://howtoinstall.co/en/ubuntu/trusty/dvb-tools) and [Mirakurun](https://github.com/Chinachu/Mirakurun).  
 The ts2cc is intended to be used as a datasets for NLP, so only plain text is acquired.  
-recdvbやdvbv5, Mirakurunで収録したTSから字幕を抽出します。自然言語処理のデータセットとしての利用を目的としているので字幕のプレーンテキストだけを取得します。
+recdvbやdvbv5, Mirakurunで収録したTSから字幕を抽出します。データセットとしての利用を目的としているので字幕のプレーンテキストだけを取得します。
 
 # Features
 - Extracts closed captions from TS packets redardless of Full TS or limited TS.  
