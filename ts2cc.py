@@ -376,10 +376,13 @@ def get_payload(packet):
   return packet[header_size:]
 ##### ES #####
 def pes_packet_check_formedness(payload):
-  b1 = payload[0]
-  b2 = payload[1]
-  b3 = payload[2]
-  b4 = payload[3]
+  try: 
+    b1 = payload[0]
+    b2 = payload[1]
+    b3 = payload[2]
+    b4 = payload[3]
+  except:
+    return False
   if b1 != 0 or b2 != 0 or b3 != 1:
     return False
   return True
