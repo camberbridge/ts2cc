@@ -776,7 +776,7 @@ class ESC(object):
       if bytes == pattern:
         if DEBUG:
           print('found designation match at {p} at index {i} and desig {d}'.format(p=str(pattern), i=str(i), d=str(i%4)))
-        return DESIGNATION_TABLE.keys()[i%4]
+        return list(DESIGNATION_TABLE)[i%4]
     #raise decoding error?
     
 

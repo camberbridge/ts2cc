@@ -194,7 +194,8 @@ class Alphanumeric(object):
     self._args.append(b)
 
     s =''.join('{:02x}'.format(a) for a in self._args)
-    h = s.decode('hex')
+    #h = s.decode('hex')  # Py2
+    h = bytes.fromhex(s)  # Py3
     self._character = h.decode('ascii')
     if self._character == '\\':
       self._character = '¥'
