@@ -42,7 +42,7 @@ def usb(f):
   '''
   if isinstance(f, list):
     n, f = split_buffer(2, f)
-    return struct.unpack('>H', ''.join(n))[0]
+    return n  # TODO: Use "n" (Return value is not used now).
   else:
     _f = f.read(2)
     if DEBUG:
